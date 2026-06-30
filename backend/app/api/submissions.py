@@ -146,3 +146,30 @@ def get_my_submissions(
         )
     return results
 
+@router.get("/me", response_model=List[SubmissionDetailResponse])
+def get_all_my_submissions(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    submissions = db.query(Submission).filter(
+        Submission.user_id == current_user.id
+    ).order_by(Submission.created_at.desc()).all()
+    
+    results = []
+    for sub in submissions:
+        results.append(
+            SubmissionDetailResponse(
+                id=sub.id,
+                problem_id=sub.problem_id,
+                user_id=sub.user_id,
+                object_data=sub.object_data,
+                size_value=sub.size_value,
+                verification_status=sub.verification_status,
+                verification_reason=sub.verification_reason,
+                is_record=sub.is_record,
+                created_at=sub.created_at,
+                username=current_user.username
+            )
+        )
+    return results
+

@@ -124,3 +124,8 @@ def get_problem_history(id: int, db: Session = Depends(get_db)):
             })
     return history
 
+@router.get("/{id}/leaderboard")
+def get_problem_leaderboard_route(id: int, db: Session = Depends(get_db)):
+    from app.api.leaderboard import get_problem_leaderboard
+    return get_problem_leaderboard(problem_id=id, db=db)
+

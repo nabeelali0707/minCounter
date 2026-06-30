@@ -9,8 +9,8 @@ from app.api.deps import get_current_user
 
 router = APIRouter()
 
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def signup(user_in: UserCreate, db: Session = Depends(get_db)):
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def register(user_in: UserCreate, db: Session = Depends(get_db)):
     # Check if username or email already exists
     user_exists = db.query(User).filter(
         (User.username == user_in.username) | (User.email == user_in.email)

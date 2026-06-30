@@ -7,10 +7,10 @@ class LeaderboardEntry(Base):
     __tablename__ = "leaderboard_entries"
 
     id = Column(Integer, primary_key=True, index=True)
-    problem_id = Column(Integer, ForeignKey("problems.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    problem_id = Column(Integer, ForeignKey("problems.id"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     best_size_value = Column(Integer, nullable=False)
-    submission_id = Column(Integer, ForeignKey("submissions.id"), nullable=False)
+    submission_id = Column(Integer, ForeignKey("submissions.id"), nullable=False, index=True)
     achieved_at = Column(DateTime, default=datetime.utcnow)
 
     problem = relationship("Problem", back_populates="leaderboard_entries")

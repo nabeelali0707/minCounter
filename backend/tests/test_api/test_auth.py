@@ -12,9 +12,9 @@ def test_auth_flow():
     email = f"test_{unique_id}@example.com"
     password = "securepassword123"
 
-    # 1. Signup
+    # 1. Register
     signup_response = client.post(
-        "/api/auth/signup",
+        "/api/auth/register",
         json={"username": username, "email": email, "password": password}
     )
     assert signup_response.status_code == 201

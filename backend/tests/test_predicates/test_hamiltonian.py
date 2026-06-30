@@ -1,6 +1,6 @@
 import pytest
 import networkx as nx
-from app.verification.predicates.hamiltonian import Degree2HamiltonianPredicate
+from app.verification.predicates.min_degree_hamiltonian import MinDegreeHamiltonianPredicate
 
 def test_degree2_hamiltonian_two_triangles():
     # Two triangles sharing a single vertex.
@@ -13,7 +13,7 @@ def test_degree2_hamiltonian_two_triangles():
         (0, 1), (1, 2), (2, 0),
         (2, 3), (3, 4), (4, 2)
     ])
-    predicate = Degree2HamiltonianPredicate()
+    predicate = MinDegreeHamiltonianPredicate()
     is_valid, reason = predicate.verify(G)
     assert is_valid is True
     assert "Valid counterexample" in reason
@@ -22,7 +22,7 @@ def test_degree2_hamiltonian_cycle():
     # C5 is connected, min degree 2, and is Hamiltonian.
     # Fails verification (not a counterexample).
     G = nx.cycle_graph(5)
-    predicate = Degree2HamiltonianPredicate()
+    predicate = MinDegreeHamiltonianPredicate()
     is_valid, reason = predicate.verify(G)
     assert is_valid is False
     assert "contains a Hamiltonian cycle" in reason
@@ -31,7 +31,7 @@ def test_degree2_hamiltonian_disconnected():
     # Disconnected graph. Fails verification.
     G = nx.Graph()
     G.add_edges_from([(0, 1), (1, 2), (2, 0), (3, 4), (4, 5), (5, 3)])
-    predicate = Degree2HamiltonianPredicate()
+    predicate = MinDegreeHamiltonianPredicate()
     is_valid, reason = predicate.verify(G)
     assert is_valid is False
     assert "not connected" in reason
@@ -39,7 +39,7 @@ def test_degree2_hamiltonian_disconnected():
 def test_degree2_hamiltonian_path():
     # Path P5. Min degree is 1 at endpoints. Fails degree check.
     G = nx.path_graph(5)
-    predicate = Degree2HamiltonianPredicate()
+    predicate = MinDegreeHamiltonianPredicate()
     is_valid, reason = predicate.verify(G)
     assert is_valid is False
     assert "less than 2" in reason

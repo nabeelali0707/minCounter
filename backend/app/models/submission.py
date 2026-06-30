@@ -7,10 +7,10 @@ class Submission(Base):
     __tablename__ = "submissions"
 
     id = Column(Integer, primary_key=True, index=True)
-    problem_id = Column(Integer, ForeignKey("problems.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    problem_id = Column(Integer, ForeignKey("problems.id"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     object_data = Column(JSON, nullable=False) # contains the graph nodes/edges
-    size_value = Column(Integer, nullable=True) # e.g. 11 for Grotzsch graph
+    size_value = Column(Integer, nullable=True, index=True) # e.g. 11 for Grotzsch graph
     verification_status = Column(String, default="pending") # pending, passed, failed
     verification_reason = Column(String, nullable=True) # e.g. "Contains K4 subgraph"
     is_record = Column(Boolean, default=False)

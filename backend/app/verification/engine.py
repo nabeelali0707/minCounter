@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.models.submission import Submission
 from app.models.problem import Problem
 from app.models.leaderboard import LeaderboardEntry
-from app.verification.graph_utils import parse_graph_json
+from app.verification.graph_utils import build_graph
 from app.verification.registry import get_predicate
 
 logger = logging.getLogger(__name__)
@@ -26,8 +26,7 @@ def verify_submission(db: Session, submission_id: int) -> Submission:
         return submission
 
     try:
-        # 1. Parse Graph
-        G = parse_graph_json(submission.object_data)
+        G = build_graph(submission.object_data)
         
         # 2. Compute Size
         predicate = get_predicate(problem.verification_predicate_ref)
@@ -42,8 +41,8 @@ def verify_submission(db: Session, submission_id: int) -> Submission:
             submission.verification_reason = reason
             
             # 4. Check if it's a new record
-            # Find the current minimal record on the leaderboard for this problem
-            current_record = db.query(LeaderboardEntry).filter(
+            # Find the current minimal record on the leaderboard for this problem with a lock
+            current_record = db.query(LeaderboardEntry).with_for_update().filter(
                 LeaderboardEntry.problem_id == problem.id
             ).order_by(LeaderboardEntry.best_size_value.asc()).first()
 
@@ -62,8 +61,8 @@ def verify_submission(db: Session, submission_id: int) -> Submission:
             if is_new_record:
                 submission.is_record = True
                 
-                # Update or create leaderboard entry for this user and problem
-                user_leaderboard_entry = db.query(LeaderboardEntry).filter(
+                # Update or create leaderboard entry for this user and problem with a lock
+                user_leaderboard_entry = db.query(LeaderboardEntry).with_for_update().filter(
                     LeaderboardEntry.problem_id == problem.id,
                     LeaderboardEntry.user_id == submission.user_id
                 ).first()

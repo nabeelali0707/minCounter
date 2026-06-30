@@ -2,7 +2,7 @@ import networkx as nx
 from typing import Tuple
 from app.verification.base import BaseVerificationPredicate
 
-class Degree2HamiltonianPredicate(BaseVerificationPredicate):
+class MinDegreeHamiltonianPredicate(BaseVerificationPredicate):
     """
     False statement: "Every connected graph with minimum degree >= 2 has a Hamiltonian cycle."
     A valid counterexample must be connected, have min degree >= 2, and have NO Hamiltonian cycle.

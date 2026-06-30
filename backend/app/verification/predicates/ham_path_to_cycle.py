@@ -2,7 +2,7 @@ import networkx as nx
 from typing import Tuple
 from app.verification.base import BaseVerificationPredicate
 
-class PathHamiltonianPredicate(BaseVerificationPredicate):
+class HamPathToCyclePredicate(BaseVerificationPredicate):
     """
     False statement: "Every graph containing a Hamiltonian path also contains a Hamiltonian cycle."
     A valid counterexample must have a Hamiltonian path but NO Hamiltonian cycle.

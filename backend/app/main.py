@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base, SessionLocal
-from app.api import auth, problems, submissions, leaderboard
+from sqlalchemy import inspect, text
+from app.api import admin_problems, auth, problems, submissions, leaderboard
 from app.models.problem import Problem
 import logging
 
@@ -11,6 +12,35 @@ logger = logging.getLogger(__name__)
 
 # Create Tables
 Base.metadata.create_all(bind=engine)
+
+def ensure_sqlite_schema_compatibility():
+    if not engine.url.drivername.startswith("sqlite"):
+        return
+
+    columns_by_table = {
+        table_name: {column["name"] for column in inspect(engine).get_columns(table_name)}
+        for table_name in inspect(engine).get_table_names()
+    }
+    statements = []
+    if "users" in columns_by_table and "is_admin" not in columns_by_table["users"]:
+        statements.append("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0")
+    if "problems" in columns_by_table:
+        problem_columns = columns_by_table["problems"]
+        if "difficulty" not in problem_columns:
+            statements.append("ALTER TABLE problems ADD COLUMN difficulty VARCHAR")
+        if "why_false" not in problem_columns:
+            statements.append("ALTER TABLE problems ADD COLUMN why_false TEXT")
+        if "known_minimal_counterexample" not in problem_columns:
+            statements.append("ALTER TABLE problems ADD COLUMN known_minimal_counterexample JSON")
+        if "draft_predicate" not in problem_columns:
+            statements.append("ALTER TABLE problems ADD COLUMN draft_predicate TEXT")
+
+    if statements:
+        with engine.begin() as connection:
+            for statement in statements:
+                connection.execute(text(statement))
+
+ensure_sqlite_schema_compatibility()
 
 # Seed Database
 def seed_problems():
@@ -41,7 +71,7 @@ def seed_problems():
                     statement_text="Every connected graph with minimum degree >= 2 contains a Hamiltonian cycle.",
                     object_type="graph",
                     size_metric="vertices",
-                    verification_predicate_ref="degree2_hamiltonian",
+                    verification_predicate_ref="min_degree_hamiltonian",
                     status="active"
                 ),
                 Problem(
@@ -57,7 +87,7 @@ def seed_problems():
                     statement_text="Every graph with a Hamiltonian path is Hamiltonian (has a Hamiltonian cycle).",
                     object_type="graph",
                     size_metric="vertices",
-                    verification_predicate_ref="path_hamiltonian",
+                    verification_predicate_ref="ham_path_to_cycle",
                     status="active"
                 )
             ]
@@ -89,6 +119,7 @@ app.add_middleware(
 
 # Include Routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(admin_problems.router, prefix="/admin", tags=["Admin Problems"])
 app.include_router(problems.router, prefix="/api/problems", tags=["Problems"])
 app.include_router(submissions.router, prefix="/api/submissions", tags=["Submissions"])
 app.include_router(leaderboard.router, prefix="/api/leaderboard", tags=["Leaderboard"])

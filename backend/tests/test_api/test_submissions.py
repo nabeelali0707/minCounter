@@ -11,9 +11,9 @@ def test_submit_valid_counterexample():
     email = f"sub_{unique_id}@example.com"
     password = "securepassword123"
 
-    # Signup & Login
+    # Register & Login
     client.post(
-        "/api/auth/signup",
+        "/api/auth/register",
         json={"username": username, "email": email, "password": password}
     )
     login_response = client.post(
