@@ -40,6 +40,7 @@ def list_problems(db: Session = Depends(get_db)):
                 verification_predicate_ref=problem.verification_predicate_ref,
                 status=problem.status,
                 created_at=problem.created_at,
+                difficulty=problem.difficulty,
                 record_size=record_size,
                 record_holder=record_holder
             )
@@ -77,6 +78,7 @@ def get_problem(id: int, db: Session = Depends(get_db)):
         verification_predicate_ref=problem.verification_predicate_ref,
         status=problem.status,
         created_at=problem.created_at,
+        difficulty=problem.difficulty,
         record_size=record_size,
         record_holder=record_holder
     )

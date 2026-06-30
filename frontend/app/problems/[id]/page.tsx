@@ -268,55 +268,40 @@ export default function WorkspacePage({ params }: { params: { id: string } }) {
   return (
     <div className="h-screen overflow-hidden font-inter text-on-surface flex flex-col">
       <Navigation activePath="/" />
-
-      {/* Top App Bar */}
-      <header
-        className="fixed top-0 right-0 flex justify-between items-center h-16 px-6 z-40"
-        style={{
-          left: '256px',
-          background: 'rgba(15,19,29,0.8)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-        }}
-      >
-        <div className="flex items-center gap-4">
-          <span className="font-outfit font-bold" style={{ fontSize: '32px', color: '#dfe2f1' }}>
-            Workspace
-          </span>
-          <div className="h-4 w-px" style={{ background: 'rgba(255,255,255,0.2)' }} />
-          <span className="font-inter font-medium uppercase text-xs tracking-widest" style={{ color: '#c2c6d6' }}>
-            {problem?.title.toUpperCase()}
-          </span>
-        </div>
-      </header>
+      <Header
+        breadcrumbs={[
+          { label: 'Workspace' },
+          { label: problem?.title || `Problem ${problemId}`, active: true },
+        ]}
+      />
 
       {/* Main Content */}
-      <main className="flex pt-16 h-screen" style={{ marginLeft: '256px' }}>
+      <main className="flex pt-16 h-screen" style={{ marginLeft: '192px' }}>
         {/* Left Panel: Problem Details & History */}
-        <section className="w-1/3 flex flex-col overflow-hidden" style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }}>
-          <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+        <section className="w-80 shrink-0 flex flex-col overflow-hidden" style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
             {/* Problem Header */}
-            <div className="mb-8">
-              <h2 className="font-outfit font-semibold mb-4 text-2xl text-on-surface">
+            <div className="mb-4">
+              <h2 className="font-outfit font-semibold mb-2 text-xl text-on-surface">
                 {problem?.title}
               </h2>
-              <p className="leading-relaxed mb-6 text-sm" style={{ color: '#c2c6d6' }}>
+              <p className="leading-relaxed mb-4 text-xs" style={{ color: '#c2c6d6' }}>
                 {problem?.statement_text}
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="glass-card p-4 rounded-sm">
-                  <p className="font-inter font-medium uppercase tracking-widest text-[10px] mb-1" style={{ color: '#c2c6d6' }}>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="glass-card p-3 rounded-sm">
+                  <p className="font-inter font-medium uppercase tracking-widest text-[9px] mb-0.5" style={{ color: '#c2c6d6' }}>
                     Complexity
                   </p>
-                  <p className="font-inter font-semibold text-base text-secondary">
+                  <p className="font-inter font-semibold text-sm text-secondary">
                     NP-Hard
                   </p>
                 </div>
-                <div className="glass-card p-4 rounded-sm">
-                  <p className="font-inter font-medium uppercase tracking-widest text-[10px] mb-1" style={{ color: '#c2c6d6' }}>
+                <div className="glass-card p-3 rounded-sm">
+                  <p className="font-inter font-medium uppercase tracking-widest text-[9px] mb-0.5" style={{ color: '#c2c6d6' }}>
                     Current Record
                   </p>
-                  <p className="font-inter font-semibold text-base text-primary">
+                  <p className="font-inter font-semibold text-sm text-primary">
                     v = {problem?.record_size || 'None'}
                   </p>
                 </div>
@@ -324,16 +309,16 @@ export default function WorkspacePage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Record Progression Chart */}
-            <div className="mb-8">
-              <div className="flex justify-between items-end mb-4">
-                <h3 className="font-inter font-semibold text-sm" style={{ color: '#dfe2f1' }}>
+            <div className="mb-6">
+              <div className="flex justify-between items-end mb-2">
+                <h3 className="font-inter font-semibold text-xs" style={{ color: '#dfe2f1' }}>
                   Record Progression
                 </h3>
-                <span className="font-inter font-medium uppercase text-[10px]" style={{ color: '#c2c6d6' }}>
+                <span className="font-inter font-medium uppercase text-[9px]" style={{ color: '#c2c6d6' }}>
                   VERTEX COUNT
                 </span>
               </div>
-              <div className="h-48 glass-card rounded-sm relative flex items-end p-4 gap-2">
+              <div className="h-32 glass-card rounded-sm relative flex items-end p-3 gap-1.5">
                 {history.length === 0 ? (
                   <div className="absolute inset-0 flex items-center justify-center text-xs text-on-surface-variant font-medium">
                     No verified records yet.
@@ -378,7 +363,7 @@ export default function WorkspacePage({ params }: { params: { id: string } }) {
 
             {/* Top Contributors */}
             <div>
-              <h3 className="font-inter font-semibold mb-4 text-sm" style={{ color: '#dfe2f1' }}>
+              <h3 className="font-inter font-semibold mb-2 text-xs" style={{ color: '#dfe2f1' }}>
                 Top Contributors
               </h3>
               <div className="glass-card rounded-sm overflow-hidden">
@@ -432,7 +417,7 @@ export default function WorkspacePage({ params }: { params: { id: string } }) {
           </div>
 
           {/* Bottom Action */}
-          <div className="p-6" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', background: '#171b26' }}>
+          <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', background: '#171b26' }}>
             {verificationResult.status && (
               <div
                 className="mb-4 p-4 rounded-sm border text-xs flex flex-col gap-1 font-inter"
@@ -473,13 +458,13 @@ export default function WorkspacePage({ params }: { params: { id: string } }) {
             <button
               disabled={verifying}
               onClick={handleVerify}
-              className="w-full py-4 font-outfit font-semibold tracking-wider rounded-sm flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
+              className="w-full py-3 font-outfit font-semibold tracking-wider rounded-sm flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
               style={{
                 border: '1px solid #4edea3',
                 boxShadow: '0 0 10px rgba(78,222,163,0.2)',
                 color: '#4edea3',
                 background: 'transparent',
-                fontSize: '18px',
+                fontSize: '15px',
               }}
               onMouseEnter={(e) => {
                 if (!verifying) {

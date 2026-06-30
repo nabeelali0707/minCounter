@@ -56,7 +56,8 @@ def seed_problems():
                     object_type="graph",
                     size_metric="vertices",
                     verification_predicate_ref="chromatic_k4",
-                    status="active"
+                    status="active",
+                    difficulty="medium"
                 ),
                 Problem(
                     title="Planar 3-Coloring",
@@ -64,7 +65,8 @@ def seed_problems():
                     object_type="graph",
                     size_metric="vertices",
                     verification_predicate_ref="planar_3color",
-                    status="active"
+                    status="active",
+                    difficulty="hard"
                 ),
                 Problem(
                     title="Degree-2 Hamiltonian Cycle",
@@ -72,7 +74,8 @@ def seed_problems():
                     object_type="graph",
                     size_metric="vertices",
                     verification_predicate_ref="min_degree_hamiltonian",
-                    status="active"
+                    status="active",
+                    difficulty="hard"
                 ),
                 Problem(
                     title="Tree Leaves",
@@ -80,7 +83,8 @@ def seed_problems():
                     object_type="graph",
                     size_metric="vertices",
                     verification_predicate_ref="tree_leaves",
-                    status="active"
+                    status="active",
+                    difficulty="beginner"
                 ),
                 Problem(
                     title="Path vs Cycle Hamiltonian",
@@ -88,12 +92,32 @@ def seed_problems():
                     object_type="graph",
                     size_metric="vertices",
                     verification_predicate_ref="ham_path_to_cycle",
-                    status="active"
+                    status="active",
+                    difficulty="medium"
                 )
             ]
             db.bulk_save_objects(seeds)
             db.commit()
             logger.info("Database seeded successfully.")
+        else:
+            # Backfill difficulty on existing seeded problems that have null difficulty
+            difficulty_map = {
+                "Chromatic K4 Conjecture": "medium",
+                "Planar 3-Coloring": "hard",
+                "Degree-2 Hamiltonian Cycle": "hard",
+                "Tree Leaves": "beginner",
+                "Path vs Cycle Hamiltonian": "medium",
+            }
+            updated = False
+            for title, diff in difficulty_map.items():
+                prob = db.query(Problem).filter(Problem.title == title, Problem.difficulty == None).first()
+                if prob:
+                    prob.difficulty = diff
+                    updated = True
+            if updated:
+                db.commit()
+                logger.info("Backfilled difficulty on existing seed problems.")
+
     except Exception as e:
         logger.error(f"Error seeding database: {e}")
         db.rollback()

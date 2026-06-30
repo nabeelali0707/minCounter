@@ -5,62 +5,10 @@ import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import { leaderboard as apiLeaderboard, submissions as apiSubmissions, problems as apiProblems, GlobalLeaderboardEntry, SubmissionResponse } from '@/lib/api';
 
-const initialFeed = [
-  {
-    isRecord: true,
-    user: '@user_42',
-    action: 'broke the record for',
-    target: 'Planar 3-Coloring',
-    suffix: 'with a 12-vertex graph!',
-    time: '2 mins ago',
-  },
-  {
-    isRecord: false,
-    user: '@quantum_leap',
-    action: 'solved',
-    target: 'Goldbach Conjecture (Restricted)',
-    suffix: 'challenge.',
-    time: '8 mins ago',
-  },
-  {
-    isRecord: true,
-    user: '@hypersphere_alpha',
-    action: 'just claimed the',
-    target: 'Z-Function Zeta',
-    suffix: 'record!',
-    time: '15 mins ago',
-  },
-  {
-    isRecord: false,
-    user: '@zeta_zero',
-    action: 'uploaded a new proof for review:',
-    target: '"On the density of G-sets"',
-    suffix: '',
-    time: '22 mins ago',
-  },
-  {
-    isRecord: false,
-    user: '@prime_oracle',
-    action: 'reached',
-    target: 'Lvl 50 Senior Researcher',
-    suffix: 'status.',
-    time: '45 mins ago',
-    isPrimary: true,
-  },
-  {
-    isRecord: true,
-    user: '@newbie_math',
-    action: 'found a new counterexample for',
-    target: 'Mersenne 31',
-    suffix: '',
-    time: '1 hour ago',
-  },
-];
-
 export default function LeaderboardPage() {
   const [searchValue, setSearchValue] = useState('');
   const [leaderboardData, setLeaderboardData] = useState<GlobalLeaderboardEntry[]>([]);
-  const [feed, setFeed] = useState<any[]>(initialFeed);
+  const [feed, setFeed] = useState<any[]>([]);
   const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -165,12 +113,12 @@ export default function LeaderboardPage() {
         onSearchChange={setSearchValue}
       />
 
-      <main className="md:ml-64 pt-24 pb-12 px-6 max-w-[1440px] mx-auto">
+      <main className="md:ml-48 pt-24 pb-12 px-6 max-w-[1440px] mx-auto">
         {/* Page Title */}
         <div className="mb-12">
           <h2
             className="font-outfit font-bold mb-2"
-            style={{ fontSize: '64px', lineHeight: '72px', color: '#dfe2f1' }}
+            style={{ fontSize: '48px', lineHeight: '56px', color: '#dfe2f1' }}
           >
             Hall of Fame
           </h2>
@@ -249,7 +197,7 @@ export default function LeaderboardPage() {
                               <div className="flex items-center gap-2">
                                 <span
                                   className="font-outfit font-bold"
-                                  style={{ fontSize: '32px', lineHeight: '40px', color: '#4edea3' }}
+                                  style={{ fontSize: '24px', lineHeight: '32px', color: '#4edea3' }}
                                 >
                                   01
                                 </span>
@@ -264,8 +212,8 @@ export default function LeaderboardPage() {
                               <span
                                 className="font-outfit font-semibold transition-colors"
                                 style={{
-                                  fontSize: '32px',
-                                  lineHeight: '40px',
+                                  fontSize: '24px',
+                                  lineHeight: '32px',
                                   color: 'rgba(223,226,241,0.5)',
                                 }}
                               >
@@ -330,7 +278,7 @@ export default function LeaderboardPage() {
                             {isFirst ? (
                               <span
                                 className="font-outfit font-semibold"
-                                style={{ fontSize: '32px', lineHeight: '40px', color: '#4edea3' }}
+                                style={{ fontSize: '24px', lineHeight: '32px', color: '#4edea3' }}
                               >
                                 {scoreValue.toLocaleString()}
                               </span>
@@ -414,7 +362,23 @@ export default function LeaderboardPage() {
                   scrollbarColor: 'rgba(78,222,163,0.3) rgba(255,255,255,0.02)',
                 }}
               >
-                {feed.map((item, i) => (
+                {loading && (
+                  <div className="flex justify-center items-center py-10">
+                    <svg className="animate-spin h-6 w-6" style={{ color: '#4edea3' }} viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
+                      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                )}
+                {!loading && feed.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">
+                    <span className="material-symbols-outlined text-3xl" style={{ color: 'rgba(194,198,214,0.3)' }}>inbox</span>
+                    <p className="text-xs font-inter" style={{ color: 'rgba(194,198,214,0.5)' }}>
+                      No activity yet. Be the first to submit a counterexample!
+                    </p>
+                  </div>
+                )}
+                {!loading && feed.map((item, i) => (
                   <div
                     key={i}
                     className="relative pl-6 pb-4"
@@ -504,7 +468,7 @@ export default function LeaderboardPage() {
                 Network Load
               </p>
               <div className="flex items-end gap-3">
-                <span className="font-outfit font-semibold" style={{ fontSize: '32px', lineHeight: '40px', color: '#dfe2f1' }}>
+                <span className="font-outfit font-semibold" style={{ fontSize: '24px', lineHeight: '32px', color: '#dfe2f1' }}>
                   {stats.networkLoad}
                 </span>
                 <span className="text-sm mb-1" style={{ color: '#4edea3' }}>

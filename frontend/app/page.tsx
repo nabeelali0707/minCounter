@@ -188,13 +188,13 @@ export default function DashboardPage() {
       />
 
       {/* Main Content Canvas */}
-      <main className="pt-24 pb-12 px-4 md:px-16 md:ml-64">
+      <main className="pt-24 pb-12 px-4 md:px-16 md:ml-48">
         {/* Hero Section */}
         <section className="mb-16">
           <div className="max-w-3xl">
             <h1
               className="font-outfit font-bold mb-6 leading-tight"
-              style={{ fontSize: '64px', lineHeight: '72px', letterSpacing: '-0.02em', color: '#dfe2f1' }}
+              style={{ fontSize: '48px', lineHeight: '56px', letterSpacing: '-0.02em', color: '#dfe2f1' }}
             >
               Find the smallest graph that breaks the theorem.{' '}
               <span style={{ color: '#4edea3' }}>Claim the record.</span>{' '}
@@ -258,7 +258,7 @@ export default function DashboardPage() {
                 </div>
                 <div
                   className="font-outfit font-semibold animate-pulse"
-                  style={{ fontSize: '32px', lineHeight: '40px', color: '#dfe2f1' }}
+                  style={{ fontSize: '24px', lineHeight: '32px', color: '#dfe2f1' }}
                 >
                   {stat.value}
                 </div>
@@ -270,7 +270,7 @@ export default function DashboardPage() {
         {/* Problems Grid Header */}
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h2 className="font-outfit font-semibold mb-1" style={{ fontSize: '32px', lineHeight: '40px', color: '#dfe2f1' }}>
+            <h2 className="font-outfit font-semibold mb-1" style={{ fontSize: '24px', lineHeight: '32px', color: '#dfe2f1' }}>
               Conjecture Registry
             </h2>
             <p style={{ color: '#c2c6d6' }}>Select a theorem to begin counterexample search</p>
@@ -343,8 +343,8 @@ export default function DashboardPage() {
                   <h3
                     className="font-outfit font-semibold mb-2 transition-colors group-hover:text-secondary"
                     style={{
-                      fontSize: '32px',
-                      lineHeight: '40px',
+                      fontSize: '24px',
+                      lineHeight: '32px',
                       color: '#dfe2f1',
                     }}
                   >
@@ -383,7 +383,7 @@ export default function DashboardPage() {
                       </div>
                       <div
                         className="font-outfit font-semibold"
-                        style={{ fontSize: '32px', lineHeight: '40px', color: '#dfe2f1' }}
+                        style={{ fontSize: '24px', lineHeight: '32px', color: '#dfe2f1' }}
                       >
                         {problem.record_size || 'N/A'}
                       </div>
