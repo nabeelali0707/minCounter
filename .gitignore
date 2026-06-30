@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Next.js / frontend build output
+.next/
+out/
+dist/
+build/
+
+# Python cache and local test output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment and local database files
+.env
+*.db
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
