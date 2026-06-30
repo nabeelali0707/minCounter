@@ -1,8 +1,9 @@
 import os
 import sys
 from logging.config import fileConfig
+from urllib.parse import unquote
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import create_engine
 from sqlalchemy import pool
 
 from alembic import context
@@ -18,8 +19,15 @@ from app.config import settings
 # access to the values within the .ini file in use.
 config = context.config
 
-# Set database URL dynamically from app settings
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Use DIRECT_URL for migrations if available (session-mode pooler, no PgBouncer)
+# Falls back to DATABASE_URL (works with SQLite for local dev)
+migration_url = settings.DIRECT_URL if settings.DIRECT_URL else settings.DATABASE_URL
+# Strip pgbouncer param if still present (safety net)
+migration_url = migration_url.replace("?pgbouncer=true", "").replace("&pgbouncer=true", "")
+# Decode any URL-encoded characters (e.g. %3F -> ?) in the password
+migration_url = unquote(migration_url)
+# configparser uses % for interpolation; escape all literal % signs as %%
+config.set_main_option("sqlalchemy.url", migration_url.replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -38,17 +46,7 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
-
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
-
-    """
+    """Run migrations in 'offline' mode."""
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -62,15 +60,9 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    """Run migrations in 'online' mode using DIRECT_URL (session-mode pooler)."""
+    connectable = create_engine(
+        migration_url,
         poolclass=pool.NullPool,
     )
 
