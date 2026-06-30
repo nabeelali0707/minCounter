@@ -98,3 +98,29 @@ def get_problem_record_graph(id: int, db: Session = Depends(get_db)):
         return {"nodes": [], "edges": []}
         
     return submission.object_data
+
+@router.get("/{id}/history")
+def get_problem_history(id: int, db: Session = Depends(get_db)):
+    """
+    Returns the historical progression of the minimal record for the problem.
+    """
+    # Get all successful submissions sorted by creation time
+    subs = db.query(Submission).filter(
+        Submission.problem_id == id,
+        Submission.verification_status == "passed"
+    ).order_by(Submission.created_at.asc()).all()
+    
+    history = []
+    current_min = float('inf')
+    for sub in subs:
+        if sub.size_value < current_min:
+            current_min = sub.size_value
+            user = db.query(User).filter(User.id == sub.user_id).first()
+            history.append({
+                "submission_id": sub.id,
+                "username": user.username if user else "Unknown",
+                "size": sub.size_value,
+                "achieved_at": sub.created_at
+            })
+    return history
+

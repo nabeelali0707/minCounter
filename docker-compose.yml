@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: mincounter-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: mincounter
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mincounter-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: mincounter-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - mincounter-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mincounter-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespassword@db:5432/mincounter
+      - REDIS_URL=redis://redis:6379/0
+      - USE_CELERY=true
+      - SECRET_KEY=supersecretjwtkeychangeinproduction123456
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mincounter-network
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mincounter-worker
+    command: celery -A app.workers.tasks.celery_app worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespassword@db:5432/mincounter
+      - REDIS_URL=redis://redis:6379/0
+      - USE_CELERY=true
+      - SECRET_KEY=supersecretjwtkeychangeinproduction123456
+    depends_on:
+      - redis
+      - db
+    networks:
+      - mincounter-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mincounter-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - mincounter-network
+
+volumes:
+  postgres_data:
+
+networks:
+  mincounter-network:
+    driver: bridge

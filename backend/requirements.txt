@@ -12,3 +12,5 @@ celery>=5.3.0
 redis>=4.6.0
 pytest>=7.3.0
 httpx>=0.24.0
+alembic>=1.11.0
+

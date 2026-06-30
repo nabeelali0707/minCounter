@@ -76,3 +76,19 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 @router.get("/me", response_model=UserResponse)
 def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(current_user: User = Depends(get_current_user)):
+    access_token = create_access_token(subject=current_user.username)
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": current_user
+    }
+
+@router.post("/logout")
+def logout():
+    # Stateless JWT logout is handled on the client by deleting the token.
+    # We return a success status code to acknowledge.
+    return {"detail": "Successfully logged out"}
+
