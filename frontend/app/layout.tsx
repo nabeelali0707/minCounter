@@ -2,7 +2,7 @@ import './globals.css';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MathMatrix | Autonomous Research Portal',
+  title: 'minCounter | Autonomous Research Portal',
   description: 'Distributed proving network and minimal counterexample leaderboard.',
 };
 

@@ -1,4 +1,4 @@
-'use client';
+  'use client';
 
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
@@ -124,7 +124,7 @@ export default function LeaderboardPage() {
           </h2>
           <p className="max-w-2xl font-inter" style={{ fontSize: '18px', lineHeight: '28px', color: '#c2c6d6' }}>
             Recognizing the elite minds who have cracked the most complex mathematical structures. Records are
-            verified by the distributed MathMatrix network.
+            verified by the distributed minCounter network.
           </p>
         </div>
 

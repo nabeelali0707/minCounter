@@ -98,7 +98,7 @@ export default function Header({ breadcrumbs, searchPlaceholder, searchValue, on
     <header className="fixed top-0 right-0 w-full md:w-[calc(100%-12rem)] h-16 bg-background/80 backdrop-blur-sm border-b border-white/10 flex justify-between items-center px-6 z-40">
       {/* Mobile Title Logo */}
       <div className="md:hidden flex items-center gap-2">
-        <span className="font-outfit font-bold text-on-surface text-xl">MathMatrix</span>
+        <span className="font-outfit font-bold text-on-surface text-xl">minCounter</span>
       </div>
 
       {/* Breadcrumbs / Status */}

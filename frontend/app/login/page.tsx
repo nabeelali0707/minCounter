@@ -103,7 +103,7 @@ export default function LoginPage() {
               functions
             </span>
             <span className="font-outfit font-bold" style={{ fontSize: '24px', color: '#dfe2f1' }}>
-              MathMatrix
+              minCounter
             </span>
           </div>
           <h1 className="font-outfit font-semibold mb-2" style={{ fontSize: '32px', color: '#dfe2f1' }}>
@@ -265,7 +265,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs mt-6" style={{ color: 'rgba(194,198,214,0.5)' }}>
-          MathMatrix Distributed Research Network · All submissions verified on-chain
+          minCounter Distributed Research Network · All submissions verified on-chain
         </p>
       </div>
     </div>
